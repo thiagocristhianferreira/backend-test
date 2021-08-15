@@ -1,13 +1,25 @@
 // services imports
-// const {
-//   investmentService: {
-//     readInvestments,
-//   }
-// } = require('../services');
+const {
+  investmentService: {
+    writeInvestments,
+  }
+} = require('../services');
+
+const {
+  Created,
+} = require('../utils/success');
 
 const investmentCreate = async (req, res) => {
   try {
-    // controllers logics
+    const { amount, owner } = req.body;
+    const { insertedId } = await writeInvestments({ amount, owner });
+
+    res.status(Created).json({
+      message: 'Investment created',
+      amount,
+      owner,
+      investmentId: insertedId,
+    });
   } catch (error) {
     console.error(error);
   }

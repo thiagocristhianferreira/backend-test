@@ -6,10 +6,12 @@ const {
 } = process.env;
 
 const connection = () => {
-  return MongoClient.connect(MONGO_DB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  return MongoClient.connect(MONGO_DB_URL,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
     .then((connection) => connection.db(DB_NAME))
     .catch((err) => {
       console.error(err);

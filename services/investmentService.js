@@ -1,14 +1,16 @@
 // models imports
-// const {
-//   investmentModel: {
-//     addInvestment,
-//   }
-// } = require('../models');
+const {
+  investmentModel: {
+    addInvestment,
+  }
+} = require('../models');
 
-const readInvestments = async () => {
-  // services logics
+const writeInvestments = async (invest) => {
+  const result = await addInvestment(invest);
+  // console.log(result.insertedId);
+  return result;
 };
 
 module.exports = {
-  readInvestments,
+  writeInvestments,
 };
