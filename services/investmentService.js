@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 // models imports
 const {
   investmentModel: {
@@ -6,8 +8,8 @@ const {
 } = require('../models');
 
 const writeInvestments = async (invest) => {
-  const result = await addInvestment(invest);
-  // console.log(result.insertedId);
+  const createdAt = moment().format('L');
+  const result = await addInvestment({ ...invest, createdAt });
   return result;
 };
 

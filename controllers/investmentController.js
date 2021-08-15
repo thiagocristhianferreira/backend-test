@@ -11,14 +11,15 @@ const {
 
 const investmentCreate = async (req, res) => {
   try {
-    const { amount, owner } = req.body;
-    const { insertedId } = await writeInvestments({ amount, owner });
+    const { body } = req;
+    const { ops } = await writeInvestments(body);
+    const { _id, amount, owner } = ops[0];
 
     res.status(Created).json({
       message: 'Investment created',
       amount,
       owner,
-      investmentId: insertedId,
+      investmentId: _id,
     });
   } catch (error) {
     console.error(error);
