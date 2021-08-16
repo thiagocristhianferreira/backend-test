@@ -3,6 +3,8 @@ const {
   investmentService: {
     writeInvestments,
     readAllInvestments,
+    // findOwner,
+    updateInvestments,
   }
 } = require('../services');
 
@@ -16,7 +18,7 @@ const investmentCreate = async (req, res) => {
     const { body } = req;
     const result = await writeInvestments(body);
 
-    if (result.output.payload) {
+    if (result.output && result.output.payload) {
       const { statusCode, error, message } = result.output.payload;
       return res.status(statusCode).json({
         statusCode,
@@ -49,7 +51,29 @@ const investmentsReader = async (req, res) => {
   }
 };
 
+const investmentsUpdate = async (req, res) => {
+  try {
+    const { value, pastMovementDate } = req.body;
+    const { owner } = req.params;
+    const updateInvest = await updateInvestments(owner, value, pastMovementDate);
+
+    if (updateInvest.output && updateInvest.output.payload) {
+      const { statusCode, error, message } = updateInvest.output.payload;
+      return res.status(statusCode).json({
+        statusCode,
+        error,
+        message,
+      });
+    }
+
+    res.status(OK).json({ updateInvest });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 module.exports = {
   investmentCreate,
   investmentsReader,
+  investmentsUpdate,
 };
