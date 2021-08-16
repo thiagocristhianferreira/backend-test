@@ -14,6 +14,20 @@ const addInvestment = async (investment) => {
   }
 };
 
+const loadAllInvestments = async () => {
+  try {
+    const db = await connection();
+    return db
+      .collection(NAME_COLLECTION)
+      .find()
+      .toArray();
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+};
+
 module.exports = {
   addInvestment,
+  loadAllInvestments,
 };
