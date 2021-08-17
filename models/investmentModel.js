@@ -58,9 +58,23 @@ const investmentUpdate = async (owner, movimentHistory, balance) => {
   }
 };
 
+const getAllInvestors = async () => {
+  try {
+    const db = await connection();
+    return db
+      .collection(NAME_COLLECTION)
+      .find({})
+      .toArray();
+  } catch (error) {
+    console.log(error.message);
+    return null;
+  }
+};
+
 module.exports = {
   addInvestment,
   loadAllInvestments,
   findOwnerInvester,
   investmentUpdate,
+  getAllInvestors,
 };

@@ -19,7 +19,7 @@ const {
 
 const investment = express.Router();
 
-// creating CRUD
+// CRUD
 investment.post('/investment', amountVerification, ownerVerification, investmentCreate);
 investment.get('/investment', investmentsReader);
 // investment.get('/investment/:id', investmentById);

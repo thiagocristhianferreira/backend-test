@@ -1,5 +1,6 @@
 const moment = require('moment');
 const Boom = require('@hapi/boom');
+const cron = require('node-cron');
 
 // models imports
 const {
@@ -7,12 +8,14 @@ const {
     addInvestment,
     loadAllInvestments,
     investmentUpdate,
-    findOwnerInvester
+    findOwnerInvester,
+    getAllInvestors,
   }
 } = require('../models');
 
 const EMPTY_ARRAY = 0;
 const BALANCE_MIN = 0;
+const PAYMENT_RATE = 0.0052;
 
 const writeInvestments = async (invest) => {
   const { date, months, years } = moment().toObject();
@@ -37,7 +40,10 @@ const writeInvestments = async (invest) => {
   }
 
   const createdAt = !invest.createdAt ? `${date}/${months}/${years}` : invest.createdAt;
-  const result = await addInvestment({ ...invest, createdAt });
+  const balance = invest.amount;
+  const result = await addInvestment({ ...invest, createdAt, balance });
+  // Income payment scheduling
+  cronJobs(createdAt);
   return result;
 };
 
@@ -90,9 +96,22 @@ const updateInvestments = async (owner, value, pastMovementDate) => {
   return await getInvestmentsByOwner(owner);
 };
 
+// income scheduling
+const cronJobs = async (dayCreatedAt) => {
+  const dateDay = dayCreatedAt.split('/')[0];
+  // Will run once a month
+  // It will be executed on the day of investment creation
+  cron.schedule(`0 0 ${dateDay} * *`, async() => {
+    const {owner, balance} = await getAllInvestors();
+    const updateBalance = balance * PAYMENT_RATE;
+    await updateInvestments(owner, updateBalance);
+  });
+};
+
 module.exports = {
   writeInvestments,
   readAllInvestments,
   getInvestmentsByOwner,
   updateInvestments,
+  cronJobs,
 };
