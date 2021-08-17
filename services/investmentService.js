@@ -13,12 +13,12 @@ const {
   }
 } = require('../models');
 
-const EMPTY_ARRAY = 0;
 const BALANCE_MIN = 0;
 const PAYMENT_RATE = 0.0052;
+const ZERO_TO_COMPARE = 0;
 
 const writeInvestments = async (invest) => {
-  const { date, months, years } = moment().toObject();
+  const { date, months, years } = moment().toObject();// possible refactoring - code repeated
   const dateNow = `${years}/${months}/${date}`;
 
   if (invest.amount) {
@@ -41,7 +41,8 @@ const writeInvestments = async (invest) => {
 
   const createdAt = !invest.createdAt ? `${date}/${months}/${years}` : invest.createdAt;
   const balance = invest.amount;
-  const result = await addInvestment({ ...invest, createdAt, balance });
+  const movimentHistory = [];
+  const result = await addInvestment({ ...invest, createdAt, balance, movimentHistory });
   // Income payment scheduling
   cronJobs(createdAt);
   return result;
@@ -58,7 +59,7 @@ const getInvestmentsByOwner = async (owner) => {
 };
 
 const updateInvestments = async (owner, value, pastMovementDate) => {
-  const { date, months, years } = moment().toObject();
+  const { date, months, years } = moment().toObject();// possible refactoring - code repeated
   let movementDate = `${date}/${months}/${years}`;
   if (pastMovementDate) {
     const {createdAt} = await getInvestmentsByOwner(owner);
@@ -102,9 +103,27 @@ const cronJobs = async (dayCreatedAt) => {
   // Will run once a month
   // It will be executed on the day of investment creation
   cron.schedule(`0 0 ${dateDay} * *`, async() => {
-    const {owner, balance} = await getAllInvestors();
+    const { months, years } = moment().toObject();// possible refactoring - code repeated
+    const scheduleDate = `${dateDay}/${months}/${years}`;
+    // scheduleDate = SD
+    const splitSD = scheduleDate.split('/');
+    const scheduleDateFromated = `${splitSD[2]}-${splitSD[1]}-${splitSD[0]}`;
+    // last month = LM
+    const scheduleDateLM = `${dateDay}/${months - 1}/${years}`;
+
+    const {owner, balance, movimentHistory} = await getAllInvestors();
+    const cashoutCheck = movimentHistory
+      .some(moviment => {
+        moment(Date.parse(moviment.movementDate))
+          .isAfter(Date.parse(scheduleDateLM), 'day')
+        && moment(Date.parse(moviment.movementDate))
+          .isBefore(Date.parse(scheduleDateFromated), 'day')
+        && moviment.value < ZERO_TO_COMPARE;
+      });
     const updateBalance = balance * PAYMENT_RATE;
-    await updateInvestments(owner, updateBalance);
+    if (!cashoutCheck) {
+      await updateInvestments(owner, updateBalance);
+    }
   });
 };
 
