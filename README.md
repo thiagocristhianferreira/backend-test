@@ -7,6 +7,16 @@ This was a project developed for Coderock.
 - [Sumário](#sumário)
 - [GAIN](#gain)
 - [TAXATION](#taxation)
+- [HOW TO USE THE API](#HOW-TO-USE-THE-API)
+- [HOW TO USE THE API](#HOW-TO-USE-THE-API)
+  - [POST Route (/investment)](POST-Route-(/investment))
+  - [GET Route (/investment)](GET-Route-(/investment))
+  - [GET Route (/investment/:owner)](GET-Route-(/investment/:owner))
+  - [PUT Route (/investment/:owner)](POST-Route-(/investment/:owner))
+- [HEROKU DEPLOYMENT](#HEROKU-DEPLOYMENT)
+- [GITHUB REPOSITORY](#GITHUB-REPOSITORY)
+
+
 
 ### It consists of an API for an application that stores and manages investments, it must have the following features:
 
