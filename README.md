@@ -1,4 +1,4 @@
-# Back End Test Project <img src="https://coderockr.com/assets/images/coderockr.svg" align="right" height="50px" />
+# Back End Test Project <img src="./coderock.png" align="right" height="50px" />
 
 This was a project developed for Coderock.
 
