@@ -9,6 +9,6 @@ const {
 
 const apiStatus = express.Router();
 
-apiStatus.get('/status', checkStatus);
+apiStatus.get('/', checkStatus);
 
 module.exports = apiStatus;
