@@ -63,10 +63,10 @@ This route is passed 2 mandatory parameters (value, owner) and 1 optional (pastM
 
 # HEROKU DEPLOYMENT
 
-https://backend-challenge-coderock.herokuapp.com/
+<a href="https://backend-challenge-coderock.herokuapp.com/" target="_blank">App on Heroku</a>
 
 
 # GITHUB REPOSITORY
 
-https://github.com/thiagocristhianferreira/backend-test/tree/development
+<a href="https://github.com/thiagocristhianferreira/backend-test/tree/development" target="_blank">GitHub Repo</a>
 
