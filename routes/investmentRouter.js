@@ -6,6 +6,7 @@ const {
     investmentCreate,
     investmentsReader,
     investmentsUpdate,
+    investmentByOwner,
   }
 } = require('../controllers');
 
@@ -22,9 +23,9 @@ const investment = express.Router();
 // CRUD
 investment.post('/investment', amountVerification, ownerVerification, investmentCreate);
 investment.get('/investment', investmentsReader);
-// investment.get('/investment/:owner', investmentById);
+investment.get('/investment/:owner', investmentByOwner);
 investment.put('/investment/:owner', investmentsUpdate);
 
-// investment.delete('/investment/:owner', investmentDelete);
+// investment.delete('/investment/:owner', investmentDelete); // To remove investment - Not required
 
 module.exports = investment;

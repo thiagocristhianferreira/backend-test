@@ -54,12 +54,23 @@ const readAllInvestments = async () => {
 
 const getInvestmentsByOwner = async (owner) => {
   const result = await findOwnerInvester(owner);
+
+  if (!result) {
+    return Boom.notFound('Owner not found').output.payload;
+  }
+
   return result;
 };
 
 const updateInvestments = async (owner, value, pastMovementDate) => {
   const { date, months, years } = moment().toObject();// possible refactoring - code repeated
   let movementDate = `${date}/${months}/${years}`;
+  const consult = await getInvestmentsByOwner(owner);
+
+  if (consult.error) {
+    return Boom.notFound('Owner not found').output.payload;
+  }
+
   if (pastMovementDate) {
     const {createdAt} = await getInvestmentsByOwner(owner);
     const split = createdAt.split('/');
@@ -75,7 +86,6 @@ const updateInvestments = async (owner, value, pastMovementDate) => {
   }
 
   let movimentHistory = { value, movementDate };
-  const consult = await getInvestmentsByOwner(owner);
 
   let balance = consult.amount + value;
 
@@ -162,5 +172,4 @@ module.exports = {
   readAllInvestments,
   getInvestmentsByOwner,
   updateInvestments,
-  cronJobs,
 };

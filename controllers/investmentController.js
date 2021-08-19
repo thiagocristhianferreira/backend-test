@@ -3,8 +3,8 @@ const {
   investmentService: {
     writeInvestments,
     readAllInvestments,
-    // findOwner,
     updateInvestments,
+    getInvestmentsByOwner,
   }
 } = require('../services');
 
@@ -72,8 +72,29 @@ const investmentsUpdate = async (req, res) => {
   }
 };
 
+const investmentByOwner = async (req, res) => {
+  try {
+    const { owner } = req.params;
+    const findInvest = await getInvestmentsByOwner(owner);
+
+    if (findInvest.error) {
+      const { statusCode, error, message } = findInvest;
+      return res.status(statusCode).json({
+        statusCode,
+        error,
+        message,
+      });
+    }
+
+    res.status(OK).json({ findInvest });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 module.exports = {
   investmentCreate,
   investmentsReader,
   investmentsUpdate,
+  investmentByOwner,
 };
