@@ -13,7 +13,6 @@ const {
   }
 } = require('../models');
 
-const BALANCE_MIN = 0;
 const PAYMENT_RATE = 0.0052;
 const ZERO_TO_COMPARE = 0;
 
@@ -75,12 +74,9 @@ const updateInvestments = async (owner, value, pastMovementDate) => {
     movementDate = pastMovementDate;
   }
 
-  const movimentHistory = {
-    value,
-    movementDate,
-  };
-
+  let movimentHistory = { value, movementDate };
   const consult = await getInvestmentsByOwner(owner);
+
   let balance = consult.amount + value;
 
   if (consult.movimentHistory) {
@@ -89,12 +85,46 @@ const updateInvestments = async (owner, value, pastMovementDate) => {
     });
   }
 
-  if (balance < BALANCE_MIN) {
+  if (value < ZERO_TO_COMPARE) {
+    const { createdAt } = consult;
+    const ONE_YEAR_DURATION = 1;
+    const TWO_YEARS_DURATION = 2;
+    const RATE_LESS_THAN_ONE_YEAR = 0.225;
+    const RATE_BETWEEN_ONE_TWO_YEARS = 0.185;
+    const RATE_MORE_THAN_TWO_YEARS = 0.15;
+    const split = createdAt.split('/');
+    const createdAtFromated = moment((`${split[2]}-${split[1]}-${split[0]}`));
+    const now = moment((`${years}-${months}-${date}`));
+    const duration = moment.duration(now.diff(createdAtFromated));
+    const yearInNumber = duration.asYears();
+
+    if (yearInNumber < ONE_YEAR_DURATION) {
+      const tax = value * RATE_LESS_THAN_ONE_YEAR;
+      balance += tax;
+      console.log('22%');
+      movimentHistory = { value, movementDate, tax };
+    }
+    if (yearInNumber >= ONE_YEAR_DURATION && duration <= TWO_YEARS_DURATION) {
+      const tax = value * RATE_BETWEEN_ONE_TWO_YEARS;
+      balance += tax;
+      console.log('18%');
+      movimentHistory = { value, movementDate, tax };
+    }
+    if (yearInNumber > TWO_YEARS_DURATION) {
+      const tax = value * RATE_MORE_THAN_TWO_YEARS;
+      balance += tax;
+      console.log('15%');
+      movimentHistory = { value, movementDate, tax };
+    }
+  }
+
+  if (balance < ZERO_TO_COMPARE) {
     return Boom.badRequest('Insufficient account balance');
   }
 
   await investmentUpdate(owner, movimentHistory, balance);
-  return await getInvestmentsByOwner(owner);
+  const result = await getInvestmentsByOwner(owner);
+  return result;
 };
 
 // income scheduling

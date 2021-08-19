@@ -22,8 +22,9 @@ const investment = express.Router();
 // CRUD
 investment.post('/investment', amountVerification, ownerVerification, investmentCreate);
 investment.get('/investment', investmentsReader);
-// investment.get('/investment/:id', investmentById);
+// investment.get('/investment/:owner', investmentById);
 investment.put('/investment/:owner', investmentsUpdate);
-// investment.delete('/investment/:id', investmentDelete);
+
+// investment.delete('/investment/:owner', investmentDelete);
 
 module.exports = investment;
