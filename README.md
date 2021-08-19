@@ -41,8 +41,8 @@ Taxation is for investment time:
   Application written in NodeJS
 
 # ARCHITECTURE
-  MSC - MODEL-SERVICE-CONTROLLER
-  REST
+  __MSC__ - MODEL-SERVICE-CONTROLLER
+  __REST__
 
 # HOW TO USE THE API
 
