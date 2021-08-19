@@ -42,6 +42,7 @@ Taxation is for investment time:
 
 # ARCHITECTURE
   MSC - MODEL-SERVICE-CONTROLLER
+  REST
 
 # HOW TO USE THE API
 
